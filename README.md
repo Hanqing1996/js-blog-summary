@@ -1,7 +1,7 @@
 # js-blog-summary
 对冴羽的"js深入系列"的总结，[博客地址](https://github.com/mqyqingfeng/Blog)
 
-#### [静态作用域与动态作用域](https://github.com/mqyqingfeng/Blog/issues/3)
+## [静态作用域与动态作用域](https://github.com/mqyqingfeng/Blog/issues/3)
 > js奉行的词法作用域就属于静态作用域
 * 静态作用域
 函数能访问哪些变量，在函数定义时就已经决定了
@@ -48,7 +48,7 @@ bar();
 前面我们已经说了，JavaScript采用的是静态作用域，所以这个例子的结果是 1。
 
 ---
-#### [执行上下文栈](https://github.com/mqyqingfeng/Blog/issues/4)
+## [执行上下文栈](https://github.com/mqyqingfeng/Blog/issues/4)
 当执行一个函数的时候，就会创建一个执行上下文，并且压入执行上下文栈，当函数执行完毕的时候，就会将函数的执行上下文从栈中弹出。
 
 #### 示例
@@ -91,20 +91,13 @@ ECStack.push(<f> functionContext);
 ECStack.pop();
 ```
 ---
-#### [作用域链](https://github.com/mqyqingfeng/Blog/issues/6)
+## [作用域链](https://github.com/mqyqingfeng/Blog/issues/6)
 当查找变量的时候，会先从当前上下文的变量对象中查找，如果没有找到，就会从父级(词法层面上的父级)执行上下文的变量对象中查找，一直找到全局上下文的变量对象，也就是全局对象。这样由多个执行上下文的变量对象构成的链表就叫做作用域链。
 
 #### 函数的内部属性 [[scope]]
 当函数创建的时候，就会保存所有父变量对象到其中，你可以理解 [[scope]] 就是所有父变量对象的层级链，但是注意：[[scope]] 并不代表完整的作用域链！
 
 #### 函数执行上下文中作用域链和变量对象的创建过程：
-* 总体概括
-1. 函数被创建时，保存一个基于词法产生的作用域
-2. 函数执行前，发生了以下几件事:
-    2.1 创建 checkscope 函数执行上下文
-    2.2 
-3. 
-
 * 示例
 ```
 var scope = "global scope";
@@ -116,20 +109,20 @@ checkscope();
 ```
 执行过程如下：
 
-1.checkscope 函数被创建，保存作用域链到 内部属性[[scope]]
+1.checkscope 函数被创建，保存作用域链到内部属性[[scope]]
 ```
 checkscope.[[scope]] = [
     globalContext.VO
 ];
 ```
-2.执行 checkscope 函数，创建 checkscope 函数执行上下文，checkscope 函数执行上下文被压入执行上下文栈
+2.创建 checkscope 函数执行上下文，checkscope 函数执行上下文被压入执行上下文栈
 ```
 ECStack = [
     checkscopeContext,
     globalContext
 ];
 ```
-3.checkscope 函数并不立刻执行，开始做准备工作，第一步：复制函数[[scope]]属性创建作用域链
+3.checkscope 函数执行前，需要初始化 checkscopeContext，第一步：设置 checkscopeContext 的 Scope 属性，即复制函数[[scope]]属性创建作用域链
 ```
 checkscopeContext = {
     Scope: checkscope.[[scope]],
@@ -171,17 +164,14 @@ checkscopeContext = {
     Scope: [AO, [[Scope]]]
 }
 ```
-7.查找到 scope2 的值，返回后函数执行完毕，函数上下文从执行上下文栈中弹出
+7.查找到 scope2 的值，返回后函数执行完毕，函数上下文从执行上下文栈中弹出，checkscopeContext 被销毁。直到下次 checkscope 再次运行，重复步骤2-7
 ```
 ECStack = [
     globalContext
 ];
 ```
-
-#### 总结
-1. 函数在被创建时会产生一个基于词法所生成的作用域链；
-2. 函数在执行时，会复制1所提到的作用域，作为
-
+---
+## [闭包](https://github.com/mqyqingfeng/Blog/issues/9)
 
 
 
