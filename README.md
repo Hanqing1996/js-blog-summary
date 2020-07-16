@@ -174,7 +174,7 @@ ECStack = [
 ## [闭包](https://github.com/mqyqingfeng/Blog/issues/9)
 #### 闭包的实现原理
 1. 函数上下文从执行上下文栈中被弹出后，函数上下文虽然被销毁了，但是其AO（即context.AO）内存不被销毁，仍可访问。
-2. 函数内部访问一个变量，会沿着作用域（由各个AO，即一串可访问变量集合组成）链访问
+2. 在函数执行过程中，如果函数需要访问一个变量，它会沿着自己的函数上下文作用域（即context.Scope 由各个AO，即一串可访问变量集合组成）链查找
 
 #### 示例
 ```
@@ -205,5 +205,6 @@ fContext = {
 ```
 对的，就是因为这个作用域链，f 函数依然可以读取到 checkscopeContext.AO 的值，说明当 f 函数引用了 checkscopeContext.AO 中的值的时候，即使 checkscopeContext 被销毁了，但是 JavaScript 依然会让 checkscopeContext.AO 活在内存中，f 函数依然可以通过 f 函数的作用域链找到它，正是因为 JavaScript 做到了这一点，从而实现了闭包这个概念。
 
-
+---
+待续
 
