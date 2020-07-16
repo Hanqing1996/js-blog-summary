@@ -162,6 +162,7 @@ checkscopeContext = {
     },
     Scope: [AO, [[Scope]]]
 }
+```
 7.查找到 scope2 的值，返回后函数执行完毕，函数上下文从执行上下文栈中弹出
 ```
 ECStack = [
