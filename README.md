@@ -164,7 +164,7 @@ checkscopeContext = {
     Scope: [AO, [[Scope]]]
 }
 ```
-7.查找到 scope2 的值，返回后函数执行完毕，函数上下文从执行上下文栈中弹出，checkscopeContext 被销毁。直到下次 checkscope 再次运行，重复步骤2-7
+7.查找到 scope2 的值，返回后函数执行完毕，checkscopeContext 从执行上下文栈中弹出，checkscopeContext 被销毁。直到下次 checkscope 再次运行，重复步骤2-7
 ```
 ECStack = [
     globalContext
@@ -172,6 +172,38 @@ ECStack = [
 ```
 ---
 ## [闭包](https://github.com/mqyqingfeng/Blog/issues/9)
+#### 闭包的实现原理
+1. 函数上下文从执行上下文栈中被弹出后，函数上下文虽然被销毁了，但是其AO（即context.AO）内存不被销毁，仍可访问。
+2. 函数内部访问一个变量，会沿着作用域（由各个AO，即一串可访问变量集合组成）链访问
+
+#### 示例
+```
+var scope = "global scope";
+function checkscope(){
+    var scope = "local scope";
+    function f(){
+        return scope;
+    }
+    return f;
+}
+
+var foo = checkscope();
+foo();
+```
+当 f 函数执行的时候，checkscope 函数上下文已经被销毁了啊(即从执行上下文栈中被弹出)，怎么还会读取到 checkscope 作用域下的 scope 值呢？
+
+以上的代码，要是转换成 PHP，就会报错，因为在 PHP 中，f 函数只能读取到自己作用域和全局作用域里的值，所以读不到 checkscope 下的 scope 值。
+
+然而 JavaScript 却是可以的！
+
+当我们了解了具体的执行过程后，我们知道 f 执行上下文维护了一个作用域链：
+```
+fContext = {
+    Scope: [AO, checkscopeContext.AO, globalContext.VO],
+}
+
+```
+对的，就是因为这个作用域链，f 函数依然可以读取到 checkscopeContext.AO 的值，说明当 f 函数引用了 checkscopeContext.AO 中的值的时候，即使 checkscopeContext 被销毁了，但是 JavaScript 依然会让 checkscopeContext.AO 活在内存中，f 函数依然可以通过 f 函数的作用域链找到它，正是因为 JavaScript 做到了这一点，从而实现了闭包这个概念。
 
 
 
